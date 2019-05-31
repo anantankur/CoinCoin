@@ -2,6 +2,7 @@ package com.ankuranant.coincoin;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -44,10 +45,16 @@ public class CoinCoin extends ApplicationAdapter {
 	private int gameState;
 
 	private Rectangle manRectangle;
+
+	private Preferences prefs;
+	int highScore = 0;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+
+		prefs = Gdx.app.getPreferences("CoinPreferences");
+
 		background = new Texture("bg.png");
 		man = new Texture[4];
 		man[0] = new Texture("frame-1.png");
@@ -71,17 +78,19 @@ public class CoinCoin extends ApplicationAdapter {
 		startFont = new BitmapFont();
 		startFont.setColor(Color.WHITE);
 		startFont.getData().setScale(4);
+
+		highScore = prefs.getInteger("hs", 0);
 	}
 
 	private void makeCoin() {
 		float height = random.nextFloat() * Gdx.graphics.getHeight();
-		coinYs.add((int)height);
+		coinYs.add(Math.abs((int)height - (coin.getHeight() / 2)));
 		coinXs.add(Gdx.graphics.getWidth());
 	}
 
 	private void makeBomb() {
 		float height = random.nextFloat() * Gdx.graphics.getHeight();
-		bombYs.add((int)height);
+		bombYs.add(Math.abs((int)height - (bomb.getHeight() / 2)));
 		bombXs.add(Gdx.graphics.getWidth());
 	}
 
@@ -93,7 +102,7 @@ public class CoinCoin extends ApplicationAdapter {
 		if(gameState == 1) {
 			// game is live
 
-			if(coinCount < 100) {
+			if(coinCount < 80) {
 				coinCount++;
 			} else {
 				coinCount = 0;
@@ -107,7 +116,7 @@ public class CoinCoin extends ApplicationAdapter {
 				coinRectangle.add(new Circle(coinXs.get(i)+(float)coin.getWidth() / 4, coinYs.get(i)+(float)coin.getHeight() / 4, (float)coin.getWidth() / 4)); // <- 4 because image is half of original so /2/2
 			}
 
-			if(bombCount < 250) {
+			if(bombCount < 200) {
 				bombCount++;
 			} else {
 				bombCount = 0;
@@ -141,7 +150,12 @@ public class CoinCoin extends ApplicationAdapter {
 
 			if(manY <= 0) {
 				manY = 0;
+			} else if(manY >= Gdx.graphics.getHeight() - (man[0].getHeight() / 2.5f)) {
+				manY = (int)(Gdx.graphics.getHeight() - (man[0].getHeight() / 2.5f));
 			}
+
+			scoreFont.draw(batch, String.valueOf(score), 100, Gdx.graphics.getHeight()-100);
+
 		} else if(gameState == 0) {
 			//waiting for player
 			startFont.draw(batch, "Tap to start", 10, (float)Gdx.graphics.getHeight()/2);
@@ -150,7 +164,13 @@ public class CoinCoin extends ApplicationAdapter {
 			}
 		} else if(gameState == 2) {
 			//game over
-
+			if(highScore < score) {
+				prefs.putInteger("hs", score);
+				prefs.flush();
+				scoreFont.draw(batch, "Score: " + String.valueOf(score) + "\nHS: "+String.valueOf(score), 100, Gdx.graphics.getHeight()-100);
+			} else {
+				scoreFont.draw(batch, "Score: " + String.valueOf(score) + "\nHS: "+String.valueOf(highScore), 100, Gdx.graphics.getHeight()-100);
+			}
 			startFont.draw(batch, "Game Over\nTap to restart", 10, (float)Gdx.graphics.getHeight()/2);
 			if(Gdx.input.justTouched()) {
 				gameState = 1;
@@ -177,8 +197,6 @@ public class CoinCoin extends ApplicationAdapter {
 			batch.draw(man[manCounter], (float)Gdx.graphics.getWidth() / 2 - man[manCounter].getWidth() / 1.5f, manY, manWidth, manHeight);
 		}
 		manRectangle = new Rectangle((float)Gdx.graphics.getWidth() / 2 - man[manCounter].getWidth() / 1.5f, manY, manWidth, manHeight);
-//		Gdx.app.log("App", String.valueOf(man[manCounter].getWidth()/2.5f) + " ## " + String.valueOf( man[manCounter].getHeight()/2.5f));
-//		Gdx.app.log("App", man[manCounter].getWidth() + " ## " + man[manCounter].getHeight());
 
 		for(int i=0; i<coinRectangle.size(); i++) {
 			if (Intersector.overlaps(coinRectangle.get(i), manRectangle)) {
@@ -195,8 +213,6 @@ public class CoinCoin extends ApplicationAdapter {
 				gameState = 2;
 			}
 		}
-
-		scoreFont.draw(batch, String.valueOf(score), 100, Gdx.graphics.getHeight()-100);
 
 		batch.end();
 	}
