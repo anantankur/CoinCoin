@@ -21,13 +21,13 @@ This app doesnot display any Advertisement to users.
 Visuals are children friendly.
 
 The app DOESNOT contain
-	1. Any inferences of, references to, or depictions of violence.
-	2. pictures or sounds likely to be scary or horrifying.
-	3.inferences of, references to, or depictions of sexuality, sexual violence, suggestiveness, revealing attire, or nudity.
-	4. gambling, simulations of casino gambling/bingo, or real cash payouts.
-	5. any potentially offensive language.
-	6. any reference to or use of drugs, alcohol, or tobacco.
-	7. any bodily functions such as belching, flatulence, or vomiting when used for humorous purposes
+	1. Any inferences of, references to, or depictions of violence. <br />
+	2. pictures or sounds likely to be scary or horrifying. <br />
+	3.inferences of, references to, or depictions of sexuality, sexual violence, suggestiveness, revealing attire, or nudity. <br />
+	4. gambling, simulations of casino gambling/bingo, or real cash payouts. <br />
+	5. any potentially offensive language. <br />
+	6. any reference to or use of drugs, alcohol, or tobacco. <br />
+	7. any bodily functions such as belching, flatulence, or vomiting when used for humorous purposes. <br />
 
 **Changes to This Privacy Policy**
 
